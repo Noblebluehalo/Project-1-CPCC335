@@ -56,7 +56,7 @@ Directional passes (left-to-right or right-to-left): 6
 Find time slots when **everyone is free**, given each person’s **busy schedule** and **daily active availability**.
 
 **How It Works**
-1. Convert all time strings (`HH:MM`) into **military time**.
+1. Convert all time strings (`HH:MM`) into **military time standard**.
 2. Treat time **outside each person’s active window** as busy.
 3. Merge all busy intervals across everyone.
 4. Invert the merged busy timeline to get global **free slots**.
@@ -91,6 +91,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
