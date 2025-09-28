@@ -1,16 +1,12 @@
 // -----------------------------------------------------------
-// Algorithm 2: Matching Group Schedules (Interactive Version)
+// Algorithm 2: Matching Group Schedules
 // Author: Joshua Zamora
 //
 // This program asks for each person's busy schedule and their
 // daily active hours (in 24-hour / military time, e.g., 09:00-17:00).
 // It then finds all time slots when *everyone* is free for at least
 // a required meeting duration.
-//
-// Build: g++ -std=c++17 -O2 -Wall -Wextra -o algorithm2 algorithm2.cpp
-// Run:   ./algorithm2
 // -----------------------------------------------------------
-
 #include <iostream>
 #include <vector>
 #include <string>
@@ -22,9 +18,9 @@
 
 using namespace std;
 
-using Interval = pair<int, int>; // [start, end) in minutes since midnight
+using Interval = pair<int, int>; // [start, end) in minutes 
 
-// ===== Utility: trim spaces from user input =====
+// trim spaces from user input 
 static string trim(const string& s) {
     size_t i = 0, j = s.size();
     while (i < j && isspace(static_cast<unsigned char>(s[i]))) ++i;
@@ -32,7 +28,7 @@ static string trim(const string& s) {
     return s.substr(i, j - i);
 }
 
-// ===== Time conversion helpers =====
+// Time conversion 
 // Converts "HH:MM" (24-hour military time) to total minutes from midnight
 static int toMinutes(const string& hmRaw) {
     string hm = trim(hmRaw);
@@ -43,7 +39,7 @@ static int toMinutes(const string& hmRaw) {
     return h * 60 + m;
 }
 
-// Converts total minutes from midnight back into "HH:MM" (24-hour format)
+// Converts total minutes to 24-hour format
 static string toHM(int minutes) {
     minutes = std::max(0, minutes);
     int h = minutes / 60;
@@ -52,8 +48,6 @@ static string toHM(int minutes) {
     os << setw(2) << setfill('0') << h << ":" << setw(2) << setfill('0') << m;
     return os.str();
 }
-
-// ===== Interval helpers =====
 
 // Merge overlapping or touching intervals into one continuous block
 static std::vector<Interval> mergeIntervals(std::vector<Interval> v) {
@@ -73,9 +67,6 @@ static std::vector<Interval> mergeIntervals(std::vector<Interval> v) {
 }
 
 // Normalize one person's schedule:
-//  - Mark time outside their active window as busy
-//  - Clip busy intervals so they stay inside active hours
-//  - Merge overlaps
 static std::vector<Interval> normalizeBusy(const std::vector<Interval>& busy, Interval active) {
     const int DAY = 24 * 60;
     std::vector<Interval> clipped;
@@ -117,10 +108,8 @@ static std::vector<Interval> invertToFree(const std::vector<Interval>& busy) {
     return freeSlots;
 }
 
-// ===== Core solver =====
-// schedules: each person's busy intervals (strings HH:MM)
+// schedules: each person's busy intervals 
 // dailyActive: each person's [start,end] active hours
-// durationMinutes: minimum meeting length
 static std::vector<pair<string, string>> findMeetingSlots(
     const std::vector<std::vector<pair<string, string>>>& schedules,
     const std::vector<pair<string, string>>& dailyActive,
@@ -174,7 +163,7 @@ static std::vector<pair<string, string>> findMeetingSlots(
     return answer;
 }
 
-// ===== Input handling =====
+// Input handling 
 static void readInput(
     std::vector<std::vector<pair<string, string>>>& schedules,
     std::vector<pair<string, string>>& actives,
@@ -236,3 +225,4 @@ int main() {
     }
     return 0;
 }
+
