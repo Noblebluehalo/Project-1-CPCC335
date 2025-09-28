@@ -19,7 +19,7 @@ Given the daily availability windows and busy schedules of multiple people, the 
 
 Implemented in algorithm2.cpp.
 _________________________________________________________________________________________________________
-File Structure 
+File Structure/
     algorithm1.cpp         # Algorithm 1 (Alternating Disk Problem)
     algorithm2.cpp         # Algorithm 2 (Group Meeting Scheduler)
     README.md              # Documentation (this file)
@@ -63,5 +63,6 @@ Author
 Joshua Zamora
 
 JoshuaMZamora@csu.fullerton.edu
+
 
 
