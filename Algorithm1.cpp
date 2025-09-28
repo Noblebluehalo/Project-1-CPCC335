@@ -7,7 +7,9 @@
 // swaps when encountering "L D" (from left->right) and "L D" (from right->left).
 // For the alternating start, this completes in exactly n^2 swaps.
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 struct DiskResult {
@@ -55,7 +57,7 @@ DiskResult alternating_disks_first_approach(int n) {
         changed = ch1 || ch2;
     }
 
-    return {a, swaps, runs};
+    return { a, swaps, runs };
 }
 
 // Simple demo
@@ -65,6 +67,6 @@ int main() {
     cout << "Final arrangement: ";
     for (char c : res.disks) cout << c << ' ';
     cout << "\nSwaps: " << res.swaps
-         << "\nRuns (directional passes): " << res.runs << "\n";
+        << "\nRuns (directional passes): " << res.runs << "\n";
     return 0;
 }
