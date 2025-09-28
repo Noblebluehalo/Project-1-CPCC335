@@ -87,12 +87,13 @@ Available common slots (>= 30 min):
 [18:00, 18:30]
 ```
 **Requirements**
-C++17 or later
-Uses only the standard C++ library (no external dependencies)
+- C++17 or later
+- Uses only the standard C++ library (no external dependencies)
 
 **Author**
-Joshua Zamora
-JoshuaMZamora@csu.fullerton.edu
+- Joshua Zamora
+- JoshuaMZamora@csu.fullerton.edu
+
 
 
 
