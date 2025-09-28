@@ -1,6 +1,8 @@
 # Project 1 – Algorithms Implementation
 
-**Author:** Joshua Zamora ([JoshuaMZamora@csu.fullerton.edu](mailto:JoshuaMZamora@csu.fullerton.edu))  
+**Author:** 
+- Joshua Zamora 
+- ([JoshuaMZamora@csu.fullerton.edu](mailto:JoshuaMZamora@csu.fullerton.edu))  
 **Course:** CPSC 335 – Algorithm Engineering 
 
 ---
@@ -93,6 +95,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
