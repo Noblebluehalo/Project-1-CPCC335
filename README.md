@@ -15,10 +15,10 @@ Implemented in algorithm1.cpp.
 
 Group Meeting Scheduler
 
-Given multiple people’s daily availability windows and busy schedules, the goal is to find all possible meeting slots of at least a specified duration.
+Given the daily availability windows and busy schedules of multiple people, the goal is to find all possible meeting slots of at least a specified duration.
 
 Implemented in algorithm2.cpp.
-
+_________________________________________________________________________________________________________
 File Structure 
     algorithm1.cpp         # Algorithm 1 (Alternating Disk Problem)
     algorithm2.cpp         # Algorithm 2 (Group Meeting Scheduler)
@@ -63,4 +63,5 @@ Author
 Joshua Zamora
 
 JoshuaMZamora@csu.fullerton.edu
+
 
