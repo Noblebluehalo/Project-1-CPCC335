@@ -1,10 +1,15 @@
-// Algorithm 2: Matching Group Schedules (Interactive I/O version)
+// -----------------------------------------------------------
+// Algorithm 2: Matching Group Schedules (Interactive Version)
 // Author: Joshua Zamora
-// Note: Reads people/schedules/active windows/duration from stdin,
-//       prints all common free slots in 24-hr "HH:MM" format.
 //
-// Build: g++ -std=c++14 -O2 -Wall -Wextra -o schedules main.cpp
-// Run:   ./schedules  <  input.txt
+// This program asks for each person's busy schedule and their
+// daily active hours (in 24-hour / military time, e.g., 09:00-17:00).
+// It then finds all time slots when *everyone* is free for at least
+// a required meeting duration.
+//
+// Build: g++ -std=c++17 -O2 -Wall -Wextra -o algorithm2 algorithm2.cpp
+// Run:   ./algorithm2
+// -----------------------------------------------------------
 
 #include <iostream>
 #include <vector>
@@ -17,9 +22,9 @@
 
 using namespace std;
 
-using Interval = pair<int, int>; // [start, end) in minutes
+using Interval = pair<int, int>; // [start, end) in minutes since midnight
 
-// ===== Utility: minimal trimming (just in case user adds spaces) =====
+// ===== Utility: trim spaces from user input =====
 static string trim(const string& s) {
     size_t i = 0, j = s.size();
     while (i < j && isspace(static_cast<unsigned char>(s[i]))) ++i;
@@ -27,7 +32,8 @@ static string trim(const string& s) {
     return s.substr(i, j - i);
 }
 
-// -------- Utility: time conversions --------
+// ===== Time conversion helpers =====
+// Converts "HH:MM" (24-hour military time) to total minutes from midnight
 static int toMinutes(const string& hmRaw) {
     string hm = trim(hmRaw);
     int h = 0, m = 0;
@@ -37,6 +43,7 @@ static int toMinutes(const string& hmRaw) {
     return h * 60 + m;
 }
 
+// Converts total minutes from midnight back into "HH:MM" (24-hour format)
 static string toHM(int minutes) {
     minutes = std::max(0, minutes);
     int h = minutes / 60;
@@ -46,9 +53,11 @@ static string toHM(int minutes) {
     return os.str();
 }
 
-// -------- Interval helpers --------
+// ===== Interval helpers =====
+
+// Merge overlapping or touching intervals into one continuous block
 static std::vector<Interval> mergeIntervals(std::vector<Interval> v) {
-    if (v.empty()) return std::vector<Interval>();
+    if (v.empty()) return {};
     std::sort(v.begin(), v.end());
     std::vector<Interval> out;
     out.reserve(v.size());
@@ -56,15 +65,17 @@ static std::vector<Interval> mergeIntervals(std::vector<Interval> v) {
         Interval iv = v[idx];
         if (out.empty() || iv.first > out.back().second) {
             out.push_back(iv);
-        }
-        else {
+        } else {
             out.back().second = std::max(out.back().second, iv.second);
         }
     }
     return out;
 }
 
-// Treat outside-active as busy + clip busy to active; then merge.
+// Normalize one person's schedule:
+//  - Mark time outside their active window as busy
+//  - Clip busy intervals so they stay inside active hours
+//  - Merge overlaps
 static std::vector<Interval> normalizeBusy(const std::vector<Interval>& busy, Interval active) {
     const int DAY = 24 * 60;
     std::vector<Interval> clipped;
@@ -81,7 +92,7 @@ static std::vector<Interval> normalizeBusy(const std::vector<Interval>& busy, In
     return mergeIntervals(clipped);
 }
 
-// Union of all busy intervals across people.
+// Combine all busy intervals from all people into one merged list
 static std::vector<Interval> unionBusyAll(const std::vector<std::vector<Interval>>& allBusy) {
     std::vector<Interval> events;
     size_t total = 0;
@@ -92,22 +103,24 @@ static std::vector<Interval> unionBusyAll(const std::vector<std::vector<Interval
     return mergeIntervals(events);
 }
 
-// Complement of busy over the 24h day → global free slots.
+// Invert busy intervals over the full 24h day to get free time slots
 static std::vector<Interval> invertToFree(const std::vector<Interval>& busy) {
     const int DAY = 24 * 60;
     std::vector<Interval> freeSlots;
     int prev = 0;
     for (size_t i = 0; i < busy.size(); ++i) {
         int s = busy[i].first;
-        int e = busy[i].second;
         if (prev < s) freeSlots.push_back(Interval(prev, s));
-        prev = std::max(prev, e);
+        prev = std::max(prev, busy[i].second);
     }
     if (prev < DAY) freeSlots.push_back(Interval(prev, DAY));
     return freeSlots;
 }
 
-// Core solver: schedules/actives in strings; returns free slots as strings.
+// ===== Core solver =====
+// schedules: each person's busy intervals (strings HH:MM)
+// dailyActive: each person's [start,end] active hours
+// durationMinutes: minimum meeting length
 static std::vector<pair<string, string>> findMeetingSlots(
     const std::vector<std::vector<pair<string, string>>>& schedules,
     const std::vector<pair<string, string>>& dailyActive,
@@ -117,13 +130,19 @@ static std::vector<pair<string, string>> findMeetingSlots(
     std::vector<std::vector<Interval>> busyLists(k);
     std::vector<Interval> actives(k);
 
-    // Convert everything to minutes and sort per-person busy
+    // Convert all input to minutes and sort each person's busy list
     for (size_t i = 0; i < k; ++i) {
         for (size_t j = 0; j < schedules[i].size(); ++j) {
-            busyLists[i].push_back(Interval(toMinutes(schedules[i][j].first), toMinutes(schedules[i][j].second)));
+            busyLists[i].push_back(Interval(
+                toMinutes(schedules[i][j].first),
+                toMinutes(schedules[i][j].second)
+            ));
         }
         std::sort(busyLists[i].begin(), busyLists[i].end());
-        actives[i] = Interval(toMinutes(dailyActive[i].first), toMinutes(dailyActive[i].second));
+        actives[i] = Interval(
+            toMinutes(dailyActive[i].first),
+            toMinutes(dailyActive[i].second)
+        );
     }
 
     // Normalize each person's unavailability
@@ -131,18 +150,18 @@ static std::vector<pair<string, string>> findMeetingSlots(
     for (size_t i = 0; i < k; ++i)
         normBusy[i] = normalizeBusy(busyLists[i], actives[i]);
 
-    // Union busy across everyone, then invert to free
+    // Combine everyone's busy times, then invert to find free slots
     std::vector<Interval> mergedBusy = unionBusyAll(normBusy);
     std::vector<Interval> freeSlots = invertToFree(mergedBusy);
 
-    // Shared active window across all people
+    // Shared active window (latest start and earliest end across all people)
     int globalStart = 0, globalEnd = 24 * 60;
     for (size_t i = 0; i < actives.size(); ++i) {
         globalStart = std::max(globalStart, actives[i].first);
         globalEnd = std::min(globalEnd, actives[i].second);
     }
 
-    // Keep only slots within shared active window and ≥ duration
+    // Keep only slots within shared active window and long enough
     std::vector<pair<string, string>> answer;
     for (size_t i = 0; i < freeSlots.size(); ++i) {
         int s = freeSlots[i].first;
@@ -155,7 +174,7 @@ static std::vector<pair<string, string>> findMeetingSlots(
     return answer;
 }
 
-// ===== Simple input helpers =====
+// ===== Input handling =====
 static void readInput(
     std::vector<std::vector<pair<string, string>>>& schedules,
     std::vector<pair<string, string>>& actives,
@@ -170,26 +189,25 @@ static void readInput(
         cerr << "Invalid number of people.\n";
         exit(1);
     }
-    schedules.assign(k, std::vector<pair<string, string>>());
-    actives.assign(k, std::make_pair("09:00","17:00"));
+    schedules.assign(k, {});
+    actives.assign(k, make_pair("09:00","17:00"));
 
     for (int p = 0; p < k; ++p) {
         int m;
         cout << "Person " << (p + 1) << " - number of busy intervals: ";
         cin >> m;
-        cin.ignore(); // <-- Add this line
 
         cout << "Enter " << m << " busy intervals as 'HH:MM HH:MM' (start end) per line:\n";
         for (int i = 0; i < m; ++i) {
             string s, e;
             cin >> s >> e;
-            schedules[p].push_back(std::make_pair(s, e));
+            schedules[p].push_back(make_pair(s, e));
         }
 
         cout << "Enter daily active window 'HH:MM HH:MM' (earliest latest): ";
         string aStart, aEnd;
         cin >> aStart >> aEnd;
-        actives[p] = std::make_pair(aStart, aEnd);
+        actives[p] = make_pair(aStart, aEnd);
     }
 
     cout << "Enter required meeting duration in minutes: ";
@@ -201,18 +219,17 @@ int main() {
     std::vector<pair<string, string>> actives;
     int durationMinutes = 0;
 
-    // Read input
+    // Read schedules and active windows (in 24-hour military time)
     readInput(schedules, actives, durationMinutes);
 
-    // Compute answer
+    // Compute common free slots
     std::vector<pair<string, string>> ans = findMeetingSlots(schedules, actives, durationMinutes);
 
-    // Print results
+    // Print the result
     cout << "\nAvailable common slots (>= " << durationMinutes << " min):\n";
     if (ans.empty()) {
         cout << "(none)\n";
-    }
-    else {
+    } else {
         for (size_t i = 0; i < ans.size(); ++i) {
             cout << "[" << ans[i].first << ", " << ans[i].second << "]\n";
         }
