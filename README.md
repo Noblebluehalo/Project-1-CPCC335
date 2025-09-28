@@ -19,9 +19,9 @@ Given the daily availability windows and busy schedules of multiple people, find
 ---
 
 ## File Structure
-algorithm1.cpp # Algorithm 1 (Alternating Disk Problem)
-algorithm2.cpp # Algorithm 2 (Group Meeting Scheduler)
-README.md # Documentation
+**algorithm1.cpp # Algorithm 1 (Alternating Disk Problem)**
+**algorithm2.cpp # Algorithm 2 (Group Meeting Scheduler)**
+**README.md # Documentation **
 
 
 ---
@@ -89,3 +89,4 @@ Uses only the standard C++ library (no external dependencies)
 
 Joshua Zamora
 JoshuaMZamora@csu.fullerton.edu
+
