@@ -13,11 +13,11 @@ This project implements two classic algorithmic problems in **C++**:
 
 ### 1. Alternating Disk Problem
 Sort a row of Light (L) and Dark (D) disks so that all **Darks** are on the left and all **Lights** are on the right using only adjacent swaps.  
-*Implemented in [`algorithm1.cpp`](algorithm1.cpp).*
+*Implemented in [`Algorithm1.cpp`](Algorithm1.cpp).*
 
 ### 2. Group Meeting Scheduler
 Given the daily availability windows and busy schedules of multiple people, find all possible **meeting slots** of at least a specified duration.  
-*Implemented in [`algorithm2.cpp`](algorithm2.cpp).*
+*Implemented in [`Algorithm2.cpp`](Algorithm2.cpp).*
 
 ---
 
@@ -95,6 +95,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
