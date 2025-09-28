@@ -46,6 +46,7 @@ Rearrange a user-provided sequence of Light (L) and Dark (D) disks so that all *
 ```bash
 g++ -std=c++17 -O2 -Wall -Wextra -o algorithm1 algorithm1.cpp
 ./algorithm1
+```
 Example Interaction
 
 mathematica
@@ -109,3 +110,4 @@ Uses only the standard C++ library (no external dependencies)
 Author
 Joshua Zamora
 JoshuaMZamora@csu.fullerton.edu
+
