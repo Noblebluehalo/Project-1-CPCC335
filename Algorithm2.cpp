@@ -3,13 +3,20 @@
 // among multiple people, based on their busy intervals and daily
 // active periods. Times are in "HH:MM" 24-hour format.
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <algorithm>
+#include <utility>
+
 using namespace std;
 
-using Interval = pair<int,int>; // [start, end) in minutes
+using Interval = pair<int, int>; // [start, end) in minutes
 
 // -------- Utility: time conversions --------
-static int toMinutes(const string &hm) {
+static int toMinutes(const string& hm) {
     int h = 0, m = 0;
     char colon;
     stringstream ss(hm);
@@ -30,17 +37,20 @@ static string toHM(int minutes) {
 static vector<Interval> normalizeBusy(const vector<Interval>& busy, Interval active) {
     // Add time outside the active window as busy.
     const int DAY = 24 * 60;
-    vector<Interval> clipped = { {0, active.first}, {active.second, DAY} };
+    vector<Interval> clipped;
+    clipped.push_back(make_pair(0, active.first));
+    clipped.push_back(make_pair(active.second, DAY));
 
-    for (auto [s,e] : busy) {
-        s = max(s, active.first);
-        e = min(e, active.second);
-        if (s < e) clipped.push_back({s, e});
+    for (size_t i = 0; i < busy.size(); ++i) {
+        int s = max(busy[i].first, active.first);
+        int e = min(busy[i].second, active.second);
+        if (s < e) clipped.push_back(make_pair(s, e));
     }
 
     sort(clipped.begin(), clipped.end());
     vector<Interval> merged;
-    for (auto iv: clipped) {
+    for (size_t i = 0; i < clipped.size(); ++i) {
+        Interval iv = clipped[i];
         if (merged.empty() || iv.first > merged.back().second)
             merged.push_back(iv);
         else
@@ -51,11 +61,13 @@ static vector<Interval> normalizeBusy(const vector<Interval>& busy, Interval act
 
 static vector<Interval> unionBusyAll(const vector<vector<Interval>>& allBusy) {
     vector<Interval> events;
-    for (auto &v: allBusy) events.insert(events.end(), v.begin(), v.end());
-    if (events.empty()) return {};
+    for (size_t i = 0; i < allBusy.size(); ++i)
+        events.insert(events.end(), allBusy[i].begin(), allBusy[i].end());
+    if (events.empty()) return vector<Interval>();
     sort(events.begin(), events.end());
     vector<Interval> merged;
-    for (auto iv: events) {
+    for (size_t i = 0; i < events.size(); ++i) {
+        Interval iv = events[i];
         if (merged.empty() || iv.first > merged.back().second)
             merged.push_back(iv);
         else
@@ -68,17 +80,19 @@ static vector<Interval> invertToFree(const vector<Interval>& busy) {
     const int DAY = 24 * 60;
     vector<Interval> freeSlots;
     int prev = 0;
-    for (auto [s,e]: busy) {
-        if (prev < s) freeSlots.push_back({prev, s});
+    for (size_t i = 0; i < busy.size(); ++i) {
+        int s = busy[i].first;
+        int e = busy[i].second;
+        if (prev < s) freeSlots.push_back(make_pair(prev, s));
         prev = max(prev, e);
     }
-    if (prev < DAY) freeSlots.push_back({prev, DAY});
+    if (prev < DAY) freeSlots.push_back(make_pair(prev, DAY));
     return freeSlots;
 }
 
-static vector<pair<string,string>> findMeetingSlots(
-    const vector<vector<pair<string,string>>>& schedules,
-    const vector<pair<string,string>>& dailyActive,
+static vector<pair<string, string>> findMeetingSlots(
+    const vector<vector<pair<string, string>>>& schedules,
+    const vector<pair<string, string>>& dailyActive,
     int durationMinutes
 ) {
     size_t k = schedules.size();
@@ -86,32 +100,37 @@ static vector<pair<string,string>> findMeetingSlots(
     vector<Interval> actives(k);
 
     for (size_t i = 0; i < k; ++i) {
-        for (auto [s,e] : schedules[i])
-            busyLists[i].push_back({toMinutes(s), toMinutes(e)});
+        for (size_t j = 0; j < schedules[i].size(); ++j) {
+            string s = schedules[i][j].first;
+            string e = schedules[i][j].second;
+            busyLists[i].push_back(make_pair(toMinutes(s), toMinutes(e)));
+        }
         sort(busyLists[i].begin(), busyLists[i].end());
-        actives[i] = {toMinutes(dailyActive[i].first), toMinutes(dailyActive[i].second)};
+        actives[i] = make_pair(toMinutes(dailyActive[i].first), toMinutes(dailyActive[i].second));
     }
 
     vector<vector<Interval>> normBusy(k);
     for (size_t i = 0; i < k; ++i)
         normBusy[i] = normalizeBusy(busyLists[i], actives[i]);
 
-    auto mergedBusy = unionBusyAll(normBusy);
-    auto freeSlots = invertToFree(mergedBusy);
+    vector<Interval> mergedBusy = unionBusyAll(normBusy);
+    vector<Interval> freeSlots = invertToFree(mergedBusy);
 
     // Intersection of everyone's active times
-    int globalStart = 0, globalEnd = 24*60;
-    for (auto a : actives) {
-        globalStart = max(globalStart, a.first);
-        globalEnd   = min(globalEnd, a.second);
+    int globalStart = 0, globalEnd = 24 * 60;
+    for (size_t i = 0; i < actives.size(); ++i) {
+        globalStart = max(globalStart, actives[i].first);
+        globalEnd = min(globalEnd, actives[i].second);
     }
 
-    vector<pair<string,string>> answer;
-    for (auto [s,e] : freeSlots) {
+    vector<pair<string, string>> answer;
+    for (size_t i = 0; i < freeSlots.size(); ++i) {
+        int s = freeSlots[i].first;
+        int e = freeSlots[i].second;
         int ss = max(s, globalStart);
         int ee = min(e, globalEnd);
         if (ee - ss >= durationMinutes)
-            answer.push_back({toHM(ss), toHM(ee)});
+            answer.push_back(make_pair(toHM(ss), toHM(ee)));
     }
     return answer;
 }
@@ -119,19 +138,19 @@ static vector<pair<string,string>> findMeetingSlots(
 // -------- Demo main --------
 int main() {
     // Sample data from project handout
-    vector<vector<pair<string,string>>> schedules = {
-        { {"7:00","8:30"}, {"12:00","13:00"}, {"16:00","18:00"} },
-        { {"9:00","10:30"}, {"12:20","14:00"}, {"14:30","15:00"}, {"16:00","17:00"} }
+    vector<vector<pair<string, string>>> schedules = {
+        { make_pair("7:00","8:30"), make_pair("12:00","13:00"), make_pair("16:00","18:00") },
+        { make_pair("9:00","10:30"), make_pair("12:20","14:00"), make_pair("14:30","15:00"), make_pair("16:00","17:00") }
     };
-    vector<pair<string,string>> actives = {
-        {"09:00","19:00"},
-        {"09:00","18:30"}
+    vector<pair<string, string>> actives = {
+        make_pair("09:00","19:00"),
+        make_pair("09:00","18:30")
     };
     int duration = 30;
 
-    auto ans = findMeetingSlots(schedules, actives, duration);
+    vector<pair<string, string>> ans = findMeetingSlots(schedules, actives, duration);
     cout << "Available common slots (>= " << duration << " min):\n";
-    for (auto [s,e]: ans)
-        cout << "[" << s << ", " << e << "]\n";
+    for (size_t i = 0; i < ans.size(); ++i)
+        cout << "[" << ans[i].first << ", " << ans[i].second << "]\n";
     return 0;
 }
