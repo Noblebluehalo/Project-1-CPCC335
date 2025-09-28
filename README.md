@@ -56,7 +56,7 @@ Directional passes (left-to-right or right-to-left): 6
 Find time slots when **everyone is free**, given each person’s **busy schedule** and **daily active availability**.
 
 **How It Works**
-1. Convert all time strings (`HH:MM`) into **minutes since midnight**.
+1. Convert all time strings (`HH: MM`) into **minutes since midnight**.
 2. Treat time **outside each person’s active window** as busy.
 3. Merge all busy intervals across everyone.
 4. Invert the merged busy timeline to get global **free slots**.
@@ -72,13 +72,13 @@ Person 1 - number of busy intervals: 3
 7:00 8:30
 12:00 13:00
 16:00 18:00
-09:00 19:00
+Enter daily active window 'HH: MM HH: MM' (earliest, latest):09:00 19:00
 Person 2 - number of busy intervals: 4
 9:00 10:30
 12:20 14:00
 14:30 15:00
 16:00 17:00
-09:00 18:30
+Enter daily active window 'HH: MM HH: MM' (earliest, latest): 09:00 18:30
 Enter required meeting duration in minutes: 30
 
 Available common slots (>= 30 min):
@@ -93,6 +93,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
