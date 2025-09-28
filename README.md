@@ -75,6 +75,7 @@ Find time slots when **everyone is free**, given each person’s **busy schedule
 ```bash
 g++ -std=c++17 -O2 -Wall -Wextra -o algorithm2 algorithm2.cpp
 ./algorithm2
+
 Enter number of people: 2
 Person 1 - number of busy intervals: 3
 7:00 8:30
@@ -94,12 +95,13 @@ Available common slots (>= 30 min):
 [15:00, 16:00]
 [18:00, 18:30]
 ```
-Requirements
+**Requirements**
 C++17 or later
 Uses only the standard C++ library (no external dependencies)
 
-Author
+**Author**
 Joshua Zamora
 JoshuaMZamora@csu.fullerton.edu
+
 
 
