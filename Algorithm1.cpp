@@ -1,48 +1,51 @@
-// Algorithm 1: Alternating Disks (Custom Input Version)
+// -----------------------------------------------------------
+// Algorithm 1: Alternating Disks
 // Author: Joshua Zamora
-// Description:
-//   Lets the user enter the starting sequence of Light (L) and Dark (D) disks
-//   (e.g., L D L D D L ...). Then reorders so that all D are on the left and
-//   all L are on the right using adjacent swaps, counting the swaps and passes.
 //
-// Build: g++ -std=c++17 -O2 -Wall -Wextra -o algorithm1 algorithm1.cpp
-// Run:   ./algorithm1
+//Let's the user enter a starting sequence of Light (L) and Dark (D) disks
+// (e.g., L D L D D L ...). The program will reorder them so that all D
+// disks end up on the left and all L disks on the right using adjacent swaps.
+// It also counts how many swaps and directional passes it takes.
+// -----------------------------------------------------------
 
 #include <iostream>
 #include <vector>
 #include <algorithm>
 using namespace std;
 
+// Simple struct to hold the result: final disk order, swap count, and passes
 struct DiskResult {
     vector<char> disks;
     long long swaps;
-    int runs;
+    int runs; 
 };
 
+// sorting function: repeatedly scans the array left-to-right
 DiskResult alternating_disks_first_approach(vector<char> a) {
-    long long swaps = 0;
-    int runs = 0;
+    long long swaps = 0;  // count how many swaps we do
+    int runs = 0;         // count how many full directional passes we make
 
+    // Helper checks for an order pair that is L followed by D
     auto out_of_order = [](char left, char right) {
-        return left == 'L' && right == 'D'; // L before D is an inversion
+        return left == 'L' && right == 'D'; 
     };
 
-    bool changed = true;
+    bool changed = true;  // keep going until no swaps happen in a full cycle
     while (changed) {
         changed = false;
 
-        // Left → Right pass
+        // Pass from LEFT to RIGHT
         bool ch1 = false;
         for (int i = 0; i + 1 < (int)a.size(); ++i) {
             if (out_of_order(a[i], a[i + 1])) {
-                swap(a[i], a[i + 1]);
+                swap(a[i], a[i + 1]); // swap if L is before D
                 ++swaps;
                 ch1 = true;
             }
         }
-        ++runs;
+        ++runs; // one pass completed
 
-        // Right → Left pass
+        // Pass from RIGHT to LEFT
         bool ch2 = false;
         for (int i = (int)a.size() - 2; i >= 0; --i) {
             if (out_of_order(a[i], a[i + 1])) {
@@ -51,9 +54,9 @@ DiskResult alternating_disks_first_approach(vector<char> a) {
                 ch2 = true;
             }
         }
-        ++runs;
+        ++runs; // another pass
 
-        changed = ch1 || ch2;
+        changed = ch1 || ch2; // if no swaps in both directions, stop
     }
 
     return {a, swaps, runs};
@@ -64,6 +67,7 @@ int main() {
     cout << "Enter total number of disks: ";
     cin >> size;
 
+    // basic validation for user input
     if (size <= 0) {
         cout << "Please enter a positive integer.\n";
         return 1;
@@ -71,17 +75,21 @@ int main() {
 
     cout << "Enter the sequence of disks (L for Light, D for Dark) separated by spaces:\n";
     vector<char> disks(size);
+
+    // read the sequence from the user
     for (int i = 0; i < size; ++i) {
         cin >> disks[i];
-        disks[i] = toupper(disks[i]); // allow lowercase input
+        disks[i] = toupper(disks[i]); // accept lowercase input too
         if (disks[i] != 'L' && disks[i] != 'D') {
             cout << "Invalid character. Use L or D only.\n";
             return 1;
         }
     }
 
+    // run the sorting algorithm
     auto res = alternating_disks_first_approach(disks);
 
+    // print results
     cout << "\nFinal arrangement: ";
     for (char c : res.disks) cout << c << ' ';
     cout << "\nTotal swaps performed: " << res.swaps;
