@@ -23,8 +23,8 @@ Given the daily availability windows and busy schedules of multiple people, find
 
 **File Structure**
 
-- Algorithm 1 (Alternating Disk Problem)
-- Algorithm 2 (Group Meeting Scheduler)
+- [`Algorithm 1`](Algorithm1.cpp). (Alternating Disk Problem)
+- [`Algorithm 2`](Algorithm2.cpp)(Group Meeting Scheduler)
 - README.md
 
 ---
@@ -95,6 +95,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
