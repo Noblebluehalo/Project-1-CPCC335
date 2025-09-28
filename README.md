@@ -21,15 +21,9 @@ Given the daily availability windows and busy schedules of multiple people, find
 
 ## File Structure
 
-algorithm1.cpp # Algorithm 1 (Alternating Disk Problem)
-algorithm2.cpp # Algorithm 2 (Group Meeting Scheduler)
-README.md # Documentation (this file)
-Pseudocode_Analysis.md # Pseudocode and complexity analysis
-Project1_Report.pdf # Final report with goal, analysis, and explanation
-
-pgsql
-Copy code
-
+-algorithm1.cpp # Algorithm 1 (Alternating Disk Problem)
+-algorithm2.cpp # Algorithm 2 (Group Meeting Scheduler)
+-README.md # Documentation 
 ---
 
 ## Algorithm 1 – Alternating Disk Problem
@@ -46,11 +40,7 @@ Rearrange a user-provided sequence of Light (L) and Dark (D) disks so that all *
 ```bash
 g++ -std=c++17 -O2 -Wall -Wextra -o algorithm1 algorithm1.cpp
 ./algorithm1
-```
-Example Interaction
 
-mathematica
-Copy code
 Enter total number of disks: 6
 Enter the sequence of disks (L for Light, D for Dark) separated by spaces:
 L D L D D L
@@ -58,7 +48,7 @@ L D L D D L
 Final arrangement: D D D L L L 
 Total swaps performed: 6
 Directional passes (left-to-right or right-to-left): 6
-
+```
 ## Algorithm 2 – Group Meeting Scheduler
 
 **Goal**  
@@ -102,6 +92,7 @@ Uses only the standard C++ library (no external dependencies)
 **Author**
 Joshua Zamora
 JoshuaMZamora@csu.fullerton.edu
+
 
 
 
