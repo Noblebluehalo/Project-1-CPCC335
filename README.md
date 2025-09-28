@@ -41,8 +41,6 @@ Rearrange a user-provided sequence of Light (L) and Dark (D) disks so that all *
 
 **Run Example**
 ```bash
-g++ -std=c++17 -O2 -Wall -Wextra -o algorithm1 algorithm1.cpp
-./algorithm1
 
 Enter total number of disks: 6
 Enter the sequence of disks (L for Light, D for Dark) separated by spaces:
@@ -66,8 +64,6 @@ Find time slots when **everyone is free**, given each person’s **busy schedule
 
 **Run Example**
 ```bash
-g++ -std=c++17 -O2 -Wall -Wextra -o algorithm2 algorithm2.cpp
-./algorithm2
 
 Enter number of people: 2
 Person 1 - number of busy intervals: 3
@@ -95,6 +91,7 @@ Available common slots (>= 30 min):
 **Author**
 - Joshua Zamora
 - JoshuaMZamora@csu.fullerton.edu
+
 
 
 
